@@ -46,7 +46,7 @@ app.post("/students", async (req, res) => {
   }
 });
 
-// 3. READ: Query/Scan All Student Items
+// 3. READ: Query/Scan All Student Item
 app.get("/students", async (req, res) => {
   const command = new ScanCommand({
     TableName: "Students",
