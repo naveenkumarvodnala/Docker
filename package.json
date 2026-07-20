@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-  "dev": "nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +20,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.4",
-    "mysql2": "^3.22.5",
+    "mysql2": "^3.23.1",
     "pg": "^8.22.0"
   },
   "devDependencies": {

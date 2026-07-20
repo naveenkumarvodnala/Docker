@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes App</title>
+    <style>
+        body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+}
+
+.container{
+    width:500px;
+    margin:auto;
+    margin-top:40px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+}
+
+button{
+    margin-top:10px;
+    padding:10px 20px;
+    background:green;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+.note{
+    border:1px solid gray;
+    padding:10px;
+    margin-top:15px;
+    border-radius:8px;
+}
+
+.note button{
+    margin-right:10px;
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Notes App</h1>
+
+        <input type="text" id="title" placeholder="Enter Title">
+
+        <textarea id="description" placeholder="Enter Description"></textarea>
+
+        <button onclick="addNote()">Add Note</button>
+
+        <hr>
+
+        <div id="notes"></div>
+
+    </div>
+
+<script>
+
+    const API = "http://localhost:5000/notes";
+
+async function loadNotes(){
+
+    const res = await fetch(API);
+
+    const notes = await res.json();
+
+    let output = "";
+
+    notes.forEach(note=>{
+
+        output += `
+        <div class="note">
+
+            <h3>${note.title}</h3>
+
+            <p>${note.description}</p>
+
+            <button onclick="deleteNote('${note._id}')">
+                Delete
+            </button>
+
+            <button onclick="editNote('${note._id}',
+            '${note.title}',
+            '${note.description}')">
+                Edit
+            </button>
+
+        </div>
+        `;
+
+    });
+
+    document.getElementById("notes").innerHTML = output;
+
+}
+
+async function addNote(){
+
+    const title=document.getElementById("title").value;
+
+    const description=document.getElementById("description").value;
+
+    await fetch(API,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            title,
+            description
+        })
+    });
+
+    document.getElementById("title").value="";
+    document.getElementById("description").value="";
+
+    loadNotes();
+
+}
+
+async function deleteNote(id){
+
+    await fetch(API+"/"+id,{
+        method:"DELETE"
+    });
+
+    loadNotes();
+
+}
+
+function editNote(id,title,description){
+
+    const newTitle=prompt("Title",title);
+
+    const newDescription=prompt("Description",description);
+
+    fetch(API+"/"+id,{
+        method:"PUT",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            title:newTitle,
+            description:newDescription
+        })
+    })
+    .then(()=>loadNotes());
+
+}
+
+loadNotes();
+</script>
+
+</body>
+</html>
